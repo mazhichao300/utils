@@ -17,21 +17,33 @@ def get_all_files(path, target_extention, ans):
             get_all_files(full_path, target_extention, ans)
 
 
-def unite_pdf(input_dir, all_pdfs):
+def unite_pdf(input_dir, output_dir, all_pdfs):
     arr = input_dir.split('/')
     name = arr[-1].split('-')[-1]
     keys = sorted(all_pdfs.keys())
-    print(keys)
+    # print(keys)
     
     merger = PdfMerger()
     for k in keys:
         pdf = all_pdfs[k]
         merger.append(pdf)
-    merger.write(input_dir + "/" + name + ".pdf")
+    merger.write(output_dir + "/" + name + ".pdf")
     merger.close()
 
 if __name__ =="__main__":
     input_dir = sys.argv[1]
-    all_pdfs = {}
-    get_all_files(input_dir, ".pdf", all_pdfs)
-    unite_pdf(input_dir, all_pdfs)
+    files = os.listdir(input_dir)
+
+    for file in files:
+        full_path = input_dir + "/" + file
+        print("start")
+        print(full_path)
+        if os.path.isdir(full_path):
+            all_pdfs = {}
+            try:
+                get_all_files(full_path, ".pdf", all_pdfs)
+                unite_pdf(full_path, "./pdf", all_pdfs)
+                print("success")
+            except:
+                print("error")
+        print("end")
